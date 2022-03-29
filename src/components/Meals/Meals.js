@@ -10,51 +10,7 @@ import TableRow from '@northstar/core/TableRow';
 import MealItem from './MealItem'
 import MealsHeader from './MealsHeader'
 import MealEditor from './MealEditor'
-
-const DUMMY_MEALS = [
-    {
-      id: 'm1',
-      name: 'Sushi',
-      description: 'Finest fish and veggies',
-      price: 22.99,
-    },
-    {
-      id: 'm2',
-      name: 'Schnitzel',
-      description: 'A german specialty!',
-      price: 16.5,
-    },
-    {
-      id: 'm3',
-      name: 'Barbecue Burger',
-      description: 'American, raw, meaty',
-      price: 12.99,
-    },
-    {
-      id: 'm4',
-      name: 'Green Bowl',
-      description: 'Healthy...and green...',
-      price: 18.99,
-    },
-    {
-        id: 'm5',
-        name: 'Green Bowl',
-        description: 'Healthy...and green...',
-        price: 18.99,
-    },
-    {
-        id: 'm6',
-        name: 'Green Bowl',
-        description: 'Healthy...and green...',
-        price: 18.99,
-    },
-    {
-        id: 'm7',
-        name: 'Green Bowl',
-        description: 'Healthy...and green...',
-        price: 18.99,
-    },
-];
+import MealDelete from './MealDelete'
 
 const useStyles = makeStyles({
     root: {
@@ -66,13 +22,13 @@ const useStyles = makeStyles({
     },
 });
 
-const Meals = () => {
-
+const Meals = (props) => {
+    const [currentMeal, setCurrentMeal] = useState();
     const classes = useStyles();
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
-    const handleChangePage = (event, newPage) => {
+    const handleChangePage = (newPage) => {
         setPage(newPage);
     };
 
@@ -82,24 +38,42 @@ const Meals = () => {
     };
    
     const [editorIsShown, setEditorIsShown] = useState(false)
+    const [toDelteIsShown, setToDeleteIsShown] = useState(false)
 
-    const showEditorHandler = () => {
+    const showEditorHandler = (meal) => {
         setEditorIsShown(true);
+        setCurrentMeal(meal);
     }
     
     const hideEditorHandler = () => {
         setEditorIsShown(false);
     }
 
+    const showToDeleteHandler = (meal) => {
+        setToDeleteIsShown(true);
+        setCurrentMeal(meal);
+    }
+
+    const hidetoDeleteHandler = () => {
+        setToDeleteIsShown(false);
+    }
+
+
     return ( 
-    <>      
-        {editorIsShown && <MealEditor onClose={hideEditorHandler}/>}  
+    <>   
+        {
+            editorIsShown  &&  <MealEditor currentMeal={currentMeal} onClose={hideEditorHandler}/>
+        }  
+        {
+            toDelteIsShown && <MealDelete currentMeal={currentMeal} onClose={hidetoDeleteHandler}/>
+        }            
+        { props.meals !== undefined && props.meals.length !== 0 &&
         <Paper className={classes.root}>
                 <TableContainer className={classes.container}>
                     <Table stickyHeader aria-label="sticky table">
                         <MealsHeader />
                         <TableBody>
-                            {DUMMY_MEALS
+                            {props.meals
                                 .slice(
                                     page * rowsPerPage,
                                     page * rowsPerPage + rowsPerPage
@@ -108,13 +82,14 @@ const Meals = () => {
                                 <TableRow hover role="checkbox" tabIndex={-1} key={meal.id} >                                  
                                     <MealItem
                                         id={meal.id} 
-                                        key={meal.id} 
+                                        key={meal.dbKey} 
                                         name={meal.name} 
                                         description={meal.description}
                                         price={meal.price}
-                                        onShowEditor={showEditorHandler} 
-                                    /> 
-                                </TableRow>
+                                        onShowEditor={() => showEditorHandler(meal)}
+                                        onDelete={() => showToDeleteHandler(meal)}
+                                    />                                   
+                                </TableRow>                              
                                 )}
                         </TableBody>
                     </Table>
@@ -122,13 +97,14 @@ const Meals = () => {
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 15]}
                     component="div"
-                    count={DUMMY_MEALS.length}
+                    count={props.meals.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={handleChangePage}
                     onChangeRowsPerPage={handleChangeRowsPerPage}
                 />
         </Paper>
+    }
     </>
     );
 };

@@ -14,14 +14,14 @@ const MealItem = (props) => {
 
  return (
     <>
-        <TableCell key={props.id} >
+        <TableCell key='name'>
             {meal.name}          
         </TableCell>
-        <TableCell key={props.id} >
+        <TableCell key='desc'>
             {meal.description}          
         </TableCell>
-        <TableCell key={props.id}>
-            ${meal.price.toFixed(2)}                     
+        <TableCell key='price'>
+            ${meal.price}                     
         </TableCell>
         <TableCell key='edit'>
             <IconButton edge="end" size="small" color="inherit" onClick={props.onShowEditor} >           
@@ -29,7 +29,7 @@ const MealItem = (props) => {
             </IconButton>                   
         </TableCell>
         <TableCell key='delete'>
-            <IconButton edge="end" size="small" color="inherit">           
+            <IconButton edge="end" size="small" color="inherit" onClick={props.onDelete}>           
                 <DeleteRoundedIcon />                           
             </IconButton>                 
         </TableCell>     
