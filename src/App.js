@@ -33,9 +33,10 @@ function App() {
 
     useEffect(async () => {
         const response = await fetch('https://redux-learn-46278-default-rtdb.firebaseio.com/meals.json', {
-            method: 'GET',
+            method: 'PUT',
+            body: JSON.stringify(mealItems),
             headers: {
-                'Accept' : 'application/json'
+                'Content-Type' : 'application/json'
             }
         });          
         const data = await response.json();
